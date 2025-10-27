@@ -6,7 +6,7 @@ export default async function IncomingTaskDetailsPage({
 }: {
   params: { id: string };
 }) {
-  const { id } = params;
+  const { id } = await params;
   const { task, error } = await getIncomingTaskById(id);
 
   if (error) {

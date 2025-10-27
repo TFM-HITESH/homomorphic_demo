@@ -25,7 +25,7 @@ function parsePublicKey(key: string): PublicKey {
 }
 
 export async function processRiskAnalysisTask(taskId: string) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -39,7 +39,7 @@ export async function processRiskAnalysisTask(taskId: string) {
           cookieStore.set(name, value, options);
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.delete(name, options);
+          cookieStore.delete({ name, ...options });
         },
       },
     }

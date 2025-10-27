@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { Laptop, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useSupabase } from "@/components/SupabaseAuthProvider";
 
@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 export function AuthButton() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { supabase, user } = useSupabase();
 
   const handleGoogleSignIn = async () => {
@@ -35,7 +35,12 @@ export function AuthButton() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
-              {user.user_metadata.avatar_url && <AvatarImage src={user.user_metadata.avatar_url} alt={user.user_metadata.name || ""} />}
+              {user.user_metadata.avatar_url && (
+                <AvatarImage
+                  src={user.user_metadata.avatar_url}
+                  alt={user.user_metadata.name || ""}
+                />
+              )}
               <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
             </Avatar>
           </Button>
@@ -52,12 +57,14 @@ export function AuthButton() {
             <Moon className="mr-2 h-4 w-4" />
             <span>Dark</span>
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("system")}>
+            <Laptop className="mr-2 h-4 w-4" />
+            <span>System</span>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/settings">Settings</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleLogout}>
-            Log out
-          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );

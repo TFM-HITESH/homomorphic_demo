@@ -53,21 +53,21 @@ export async function createRiskAnalysisTask(formData: { [key: string]: any }) {
     return { error: "Not authenticated" };
   }
 
-  // 1. Get user's public key
-  const { data: userData, error: userError } = await supabaseAdmin
+  // 1. Get receiver's public key
+  const { data: receiverData, error: receiverError } = await supabaseAdmin
     .from("user_data")
     .select("public_key")
-    .eq("id", user.id)
+    .eq("email", formData.receiver_email)
     .single();
 
-  if (userError || !userData?.public_key) {
+  if (receiverError || !receiverData?.public_key) {
     return {
       error:
-        "Could not find public key for user. Please generate keys in settings.",
+        "Could not find public key for receiver. Ensure the receiver has generated keys.",
     };
   }
 
-  const publicKey = parsePublicKey(userData.public_key);
+  const publicKey = parsePublicKey(receiverData.public_key);
   const scale = 100; // Use a scale to handle floating point features
   //   const wscale = 1000; // Use a scale for weights
 
@@ -99,7 +99,7 @@ export async function createRiskAnalysisTask(formData: { [key: string]: any }) {
       cholesterol: formData.cholesterol,
       risk_score: null, // The server doesn't know the score yet
       encrypted_features: encryptedFeatures,
-      public_key: userData.public_key,
+      public_key: receiverData.public_key,
     });
 
   if (insertError) {
